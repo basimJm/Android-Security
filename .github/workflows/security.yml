@@ -17,29 +17,33 @@ jobs:
     name: Verify Commit Signatures
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # required for git log to see all commits
-
-      - name: Verify commit signatures
+      - name: Get commit verification status from GitHub API
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "🔍 Checking for unsigned or unverified commits..."
-          bad_commits=$(git log origin/master..HEAD --pretty="%H" | while read commit; do
-            if ! git verify-commit "$commit" >/dev/null 2>&1; then
-              echo "$commit"
+          echo "🔍 Checking for unverified commits via GitHub API..."
+          
+          # Fetch commits from the current push or PR
+          commits=$(jq -r '.commits[].id' < $GITHUB_EVENT_PATH)
+          
+          bad=false
+          for commit in $commits; do
+            verified=$(gh api repos/${{ github.repository }}/commits/$commit --jq '.commit.verification.verified')
+            if [ "$verified" != "true" ]; then
+              echo "❌ Commit $commit is not verified!"
+              bad=true
             fi
-          done)
-
-          if [ -n "$bad_commits" ]; then
-            echo "❌ Found unsigned or unverified commits:"
-            echo "$bad_commits"
+          done
+          
+          if [ "$bad" = "true" ]; then
+            echo "❌ Found unverified commits. Rejecting pipeline."
             exit 1
           else
             echo "✅ All commits are verified and trusted."
           fi
+    
 
-  # ============================================================
+    # ============================================================
   # ⚙️ Android Build & Test — only runs if commits are verified
   # ============================================================
   build:
