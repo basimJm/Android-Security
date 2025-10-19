@@ -1,4 +1,5 @@
 plugins {
+    id("org.sonarqube") version "7.0.0.6105"
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -56,4 +57,17 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "basimJm_pipelines-sample-project")
+        property("sonar.organization", "basimjm")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.java.binaries", "build/intermediates/javac")
+        property("sonar.kotlin.version", "2.0.0")
+        property("sonar.language", "kotlin")
+    }
 }
