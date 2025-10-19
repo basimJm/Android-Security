@@ -19,6 +19,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    lint {
+        htmlReport = true
+        htmlOutput = file("${layout.buildDirectory}/reports/lint/lint-report.html")
+
+        xmlReport = true
+        xmlOutput = file("${layout.buildDirectory}/reports/lint/lint-report.xml")
+
+        textReport = true
+        textOutput = file("${layout.buildDirectory}/reports/lint/lint-report.txt")
+
+        abortOnError = false
+        warningsAsErrors = false
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -57,6 +71,11 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    lintChecks(project(":lint-rules"))
+
+    //this should dependency rejected
+    implementation("com.vanniktech:android-image-cropper:4.3.3")
 }
 
 sonarqube {

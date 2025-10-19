@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Secure Code"
 include(":app")
- 
+include(":lint-rules")

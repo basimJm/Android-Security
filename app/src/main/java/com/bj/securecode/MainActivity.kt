@@ -14,6 +14,7 @@ import com.bj.securecode.ui.theme.SecureCodeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val CLAS = "asdas"
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
