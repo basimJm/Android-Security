@@ -63,7 +63,7 @@ jobs:
 
       - name: Run SonarCloud Scan
         env:
-          SONAR_TOKEN: b9c4230419a1ea2a87307f4f543951b895aa2f1f
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 
   build:
