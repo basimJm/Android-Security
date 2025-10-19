@@ -40,9 +40,10 @@ jobs:
           fi
   
   
+  
 
   lint:
-    name: Run Android Lint
+    name: Run Android Lint (Fail on Errors or Warnings)
     runs-on: ubuntu-latest
     needs: verify-commits
 
@@ -78,9 +79,18 @@ jobs:
                            "platforms;android-${{ env.ANDROID_API_LEVEL }}" \
                            "build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}"
 
-      - name: Run Android Lint (Fail on Error)
+      - name: Run Android Lint (Stop on Issues)
         run: |
-          ./gradlew clean lintDebug --stacktrace
+          echo "🚀 Running Android Lint..."
+          ./gradlew lintDebug --stacktrace
+
+          # Fail CI if lint finds errors or warnings
+          if grep -E "Error|Warning" app/build/reports/lint-results-debug.txt; then
+            echo "❌ Lint found issues. Failing the pipeline!"
+            exit 1
+          else
+            echo "✅ No lint issues found. Continuing..."
+          fi
 
       - name: Upload Lint Reports
         if: always()
@@ -88,8 +98,11 @@ jobs:
         with:
           name: lint-reports
           path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.txt
             app/build/reports/lint/lint-report.html
             app/build/reports/lint/lint-report.txt
+  
 
   sonar:
     name: SonarCloud Analysis
