@@ -69,7 +69,6 @@ jobs:
             "-Dsonar.organization=basimjm" \
             "-Dsonar.projectKey=basimJm_pipelines-sample-project" \
             "-Dsonar.host.url=https://sonarcloud.io" \
-            "-Dsonar.login=$SONAR_TOKEN" \
             "-Dsonar.scanner.metadata.skip=true"
 
   build:
