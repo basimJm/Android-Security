@@ -75,12 +75,12 @@ jobs:
           export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
           yes | sdkmanager --licenses
           yes | sdkmanager "platform-tools" \
-                      "platforms;android-${{ env.ANDROID_API_LEVEL }}" \
-                      "build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}"
+                           "platforms;android-${{ env.ANDROID_API_LEVEL }}" \
+                           "build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}"
 
-      - name: Run Android Lint
+      - name: Run Android Lint (Fail on Error)
         run: |
-          ./gradlew lintDebug
+          ./gradlew clean lintDebug --stacktrace
 
       - name: Upload Lint Reports
         if: always()
@@ -88,11 +88,8 @@ jobs:
         with:
           name: lint-reports
           path: |
-            app/build/reports/lint-results-debug.html
-            app/build/reports/lint-results-debug.txt
             app/build/reports/lint/lint-report.html
             app/build/reports/lint/lint-report.txt
-              
 
   sonar:
     name: SonarCloud Analysis
